@@ -7,22 +7,6 @@ var key = 'ticketList';
 
 fetch(key, render);
 
-
-// for(let i = 0; i<data.length;i++){
-//       // create a new div element
-//   let newDiv = document.createElement("div");
-
-//   // and give it some content
-//   let newContent = document.createTextNode(data[i].description);
-
-//   // add the text node to the newly created div
-//   newDiv.appendChild(newContent);
-
-//   // add the newly created element and its content into the DOM
-//   document.getElementById("ticketList").appendChild(newDiv);
-// }
-
-
 function addTicket(e){
     e.preventDefault();
 
@@ -62,21 +46,27 @@ function addTicket(e){
         // localStorage.setItem('MyTicketList', JSON.stringify(tickets));
         storeTicketInput(tickets,'ticketList');
         // let data = JSON.parse(localStorage.getItem("MyTicketList"));
-        renderHtml(descriptionInput, selectedSeverity, selectedAssignment);
+        renderHtml(descriptionInput, selectedSeverity, selectedAssignment, ticket);
  
 }
 
-function renderHtml(descVal, sevVal, assVal){
+function renderHtml(descVal, sevVal, assVal, currTicket){
     let addTr = document.createElement('tr');
     let addTh = document.createElement('th');
     let addTd1 = document.createElement('td');
     let addTd2 = document.createElement('td');
     let addTd3 = document.createElement('td');
+    let addTd4 = document.createElement('td');
     let tableBody = document.getElementById('tableBody');
     let descriptionInput = document.createTextNode(descVal);
     let selectedSeverity = document.createTextNode(sevVal);
     let selectedAssignment = document.createTextNode(assVal);
+    let deleteBtn = document.createElement('button');
 
+    deleteBtn.setAttribute('type', 'button');
+    deleteBtn.classList.add('btn-danger','btn');
+
+    deleteBtn.textContent ='Delete';
     let ticketTable = document.getElementById('ticketTable');
 
    
@@ -93,11 +83,20 @@ function renderHtml(descVal, sevVal, assVal){
     addTr.appendChild(addTd1);
     addTr.appendChild(addTd2);
     addTr.appendChild(addTd3);
-
+    addTr.appendChild(addTd4);
     //append values to td's
     addTd1.appendChild(selectedSeverity);
     addTd2.appendChild(descriptionInput);
     addTd3.appendChild(selectedAssignment);
+    addTd4.appendChild(deleteBtn);
+
+    deleteBtn.addEventListener('click',function(){
+        console.warn(currTicket);
+        var index = tickets.indexOf(currTicket);
+        tickets.splice(index, 1);
+        storeTicketInput(tickets, 'ticketList');
+        tableBody.removeChild(addTr);
+    })
 }
 
 
@@ -107,7 +106,6 @@ function storeTicketInput(listItemArray, key, fetch){
     if(tickets){
         localStorage.setItem(key, tickets);
     }
-    
 }
 
 function fetch(key, callback){
